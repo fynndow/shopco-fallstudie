@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopCo – Checkout</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header><h1>Checkout</h1></header>
+  <main>
+    <form id="checkout-form" data-testid="checkout-form">
+      <label>Kartennummer
+        <input data-testid="card-number" type="text" required autocomplete="cc-number" />
+      </label>
+      <label>Gültig bis
+        <input data-testid="card-expiry" type="text" placeholder="MM/JJ" required />
+      </label>
+      <label>CVC
+        <input data-testid="card-cvc" type="text" required />
+      </label>
+      <button type="submit" data-testid="submit-order">Jetzt kaufen</button>
+      <p data-testid="checkout-error" hidden></p>
+    </form>
+  </main>
+  <script>
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem('shopco.token');
+      const res = await fetch('/api/orders/checkout', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ paymentMethod: 'card_visa' })
+      });
+      const err = document.querySelector('[data-testid="checkout-error"]');
+      if (res.status === 201) {
+        const body = await res.json();
+        window.location.href = `/order-confirmation.html?orderId=${body.orderId}`;
+        return;
+      }
+      const body = await res.json();
+      err.textContent = body.error || 'Fehler beim Checkout';
+      err.hidden = false;
+    });
+  </script>
+</body>
+</html>

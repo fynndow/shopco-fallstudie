@@ -1,0 +1,15 @@
+node_modules/
+coverage/
+reports/
+.env
+.env.local
+dist/
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+.DS_Store
+*.log
+.env.test
+Fallstudie_v10.docx
+*.docx
+.vscode/

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopCo – Warenkorb</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header><h1>Warenkorb</h1></header>
+  <main>
+    <ul id="cart-items" data-testid="cart-items"></ul>
+    <a href="/checkout.html" data-testid="go-to-checkout">Zur Kasse</a>
+  </main>
+  <script>
+    (async () => {
+      const token = localStorage.getItem('shopco.token');
+      const res = await fetch('/api/orders/cart', {
+        headers: { authorization: `Bearer ${token}` }
+      });
+      const cart = await res.json();
+      const list = document.getElementById('cart-items');
+      list.innerHTML = '';
+      for (const item of cart.items) {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'cart-item');
+        li.textContent = `${item.product.name} x${item.quantity}`;
+        list.appendChild(li);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopCo – Produkte</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>ShopCo – Produkte</h1>
+    <nav><a href="/cart.html">Warenkorb</a></nav>
+  </header>
+  <main>
+    <input data-testid="search-input" placeholder="Suchen..." />
+    <button data-testid="search-submit">Suchen</button>
+    <ul id="product-list" data-testid="product-list"></ul>
+  </main>
+  <script>
+    async function loadProducts(q = '') {
+      const url = '/api/products' + (q ? ('?q=' + encodeURIComponent(q)) : '');
+      const res = await fetch(url);
+      const data = await res.json();
+      const list = document.getElementById('product-list');
+      list.innerHTML = '';
+      for (const p of data.items) {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'product-item');
+        li.setAttribute('data-product-id', p.id);
+        li.innerHTML = `
+          <a href="/product.html?id=${p.id}" data-testid="product-link">${p.name}</a>
+          <span data-testid="product-price">${(p.price / 100).toFixed(2)} €</span>
+          <button data-testid="add-to-cart" data-product-id="${p.id}">In den Warenkorb</button>
+        `;
+        list.appendChild(li);
+      }
+      document.querySelectorAll('[data-testid="add-to-cart"]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const token = localStorage.getItem('shopco.token');
+          await fetch('/api/orders/cart/items', {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              'authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ productId: btn.dataset.productId, quantity: 1 })
+          });
+          window.location.href = '/cart.html';
+        });
+      });
+    }
+    document.querySelector('[data-testid="search-submit"]').addEventListener('click', () => {
+      const q = document.querySelector('[data-testid="search-input"]').value;
+      loadProducts(q);
+    });
+    loadProducts();
+  </script>
+</body>
+</html>

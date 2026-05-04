@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shopco-db
+    environment:
+      POSTGRES_USER: shopco
+      POSTGRES_PASSWORD: shopco
+      POSTGRES_DB: shopco
+    ports:
+      - "5433:5432"
+    volumes:
+      - shopco-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopco -d shopco"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  shopco-pgdata:

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <!-- E2E Tip -->
+  <polygon points="400,40 480,160 320,160" fill="#f4d6a0" stroke="#8a6b2e" stroke-width="2"/>
+  <text x="400" y="100" text-anchor="middle" font-size="18" font-weight="bold" fill="#3d2c0a">E2E-Tests</text>
+  <text x="400" y="125" text-anchor="middle" font-size="14" fill="#3d2c0a">Cypress · 6 Tests</text>
+  <text x="400" y="145" text-anchor="middle" font-size="12" fill="#5a4520">3 Suiten: login, search, checkout</text>
+
+  <!-- Integration Layer -->
+  <polygon points="320,160 480,160 580,320 220,320" fill="#bfdfb0" stroke="#3a6a2d" stroke-width="2"/>
+  <text x="400" y="220" text-anchor="middle" font-size="20" font-weight="bold" fill="#1d3a14">Integrationstests</text>
+  <text x="400" y="248" text-anchor="middle" font-size="14" fill="#1d3a14">Jest + Supertest + Postgres · 61 Tests</text>
+  <text x="400" y="270" text-anchor="middle" font-size="12" fill="#2f5523">3 Suiten: auth, orders, products</text>
+  <text x="400" y="290" text-anchor="middle" font-size="12" fill="#2f5523">Externe Dienste: mockFetch / nock-Stub</text>
+
+  <!-- Unit Base -->
+  <polygon points="220,320 580,320 720,480 80,480" fill="#a8c8e8" stroke="#2c5278" stroke-width="2"/>
+  <text x="400" y="380" text-anchor="middle" font-size="22" font-weight="bold" fill="#102a44">Unit-Tests</text>
+  <text x="400" y="410" text-anchor="middle" font-size="14" fill="#102a44">Jest · 184 Tests</text>
+  <text x="400" y="432" text-anchor="middle" font-size="12" fill="#1f3d5a">13 Suiten: auth · orders · products · payment · email</text>
+  <text x="400" y="452" text-anchor="middle" font-size="12" fill="#1f3d5a">Coverage-Schwellenwert: 80 % Statements</text>
+
+  <!-- Right side annotations -->
+  <line x1="600" y1="100" x2="640" y2="100" stroke="#666" stroke-width="1"/>
+  <text x="650" y="95" font-size="12" fill="#444">wenige</text>
+  <text x="650" y="110" font-size="12" fill="#444">langsam</text>
+
+  <line x1="600" y1="240" x2="640" y2="240" stroke="#666" stroke-width="1"/>
+  <text x="650" y="237" font-size="12" fill="#444">mittel</text>
+
+  <line x1="600" y1="400" x2="640" y2="400" stroke="#666" stroke-width="1"/>
+  <text x="650" y="395" font-size="12" fill="#444">viele</text>
+  <text x="650" y="410" font-size="12" fill="#444">schnell</text>
+
+  <!-- Left side annotations: speed scale -->
+  <text x="60" y="100" font-size="11" fill="#888" text-anchor="end">~60 s/Lauf</text>
+  <text x="60" y="240" font-size="11" fill="#888" text-anchor="end">~3 s/Lauf</text>
+  <text x="60" y="400" font-size="11" fill="#888" text-anchor="end">&lt;1 s/Lauf</text>
+
+  <!-- Title -->
+  <text x="400" y="20" text-anchor="middle" font-size="14" fill="#222" font-weight="bold">Testpyramide ShopCo · Referenz-Build</text>
+
+  <!-- Footer -->
+  <text x="400" y="510" text-anchor="middle" font-size="11" fill="#777">Verhältnis 184 : 61 : 6 (≈ 30 : 10 : 1) — entspricht dem Pyramidenmodell nach Fowler (2012)</text>
+</svg>

@@ -1,0 +1,32 @@
+services:
+  db-test:
+    image: postgres:16-alpine
+    container_name: shopco-db-test
+    environment:
+      POSTGRES_USER: shopco
+      POSTGRES_PASSWORD: shopco
+      POSTGRES_DB: shopco_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopco -d shopco_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  app-test:
+    build: .
+    container_name: shopco-app-test
+    depends_on:
+      db-test:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://shopco:shopco@db-test:5432/shopco_test?schema=public"
+      JWT_SECRET: "shopco-test-secret"
+      NODE_ENV: test
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    command: sh -c "npx prisma migrate deploy && node prisma/seed.js && node src/server.js"

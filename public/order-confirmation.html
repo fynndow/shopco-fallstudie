@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopCo – Bestellung erfolgreich</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header><h1>Bestellung erfolgreich</h1></header>
+  <main>
+    <p>Vielen Dank für Ihren Einkauf.</p>
+    <p data-testid="order-id">Bestellnummer: <span id="order-id"></span></p>
+  </main>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('order-id').textContent = params.get('orderId') || '';
+  </script>
+</body>
+</html>

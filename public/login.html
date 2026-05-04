@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopCo – Login</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header><h1>ShopCo – Login</h1></header>
+  <main>
+    <form id="login-form" data-testid="login-form">
+      <label>E-Mail <input type="email" data-testid="email" required></label>
+      <label>Passwort <input type="password" data-testid="password" required></label>
+      <button type="submit" data-testid="login-submit">Einloggen</button>
+      <p id="login-error" data-testid="login-error" hidden></p>
+    </form>
+  </main>
+  <script src="/app.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.querySelector('[data-testid="email"]').value;
+      const password = document.querySelector('[data-testid="password"]').value;
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const err = document.getElementById('login-error');
+      if (!res.ok) {
+        const body = await res.json();
+        err.textContent = body.error || 'Login fehlgeschlagen';
+        err.hidden = false;
+        return;
+      }
+      const body = await res.json();
+      localStorage.setItem('shopco.token', body.token);
+      window.location.href = '/products.html';
+    });
+  </script>
+</body>
+</html>

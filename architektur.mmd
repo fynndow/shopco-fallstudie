@@ -1,0 +1,53 @@
+%%{init: {'flowchart': {'nodeSpacing': 25, 'rankSpacing': 30, 'curve': 'linear'}}}%%
+graph TB
+  Browser["Browser<br/>(Static HTML/CSS)"]
+
+  subgraph Host["Docker Host<br/>(macOS / Docker Desktop)"]
+    direction LR
+
+    subgraph Runtime["Laufzeit-Umgebung"]
+      direction LR
+      App["shopco-app<br/>Node.js 20 + Express<br/>Port 3000"]
+      DB[("PostgreSQL 16<br/>Port 5432 → 5433")]
+      App -->|Prisma 5.22| DB
+    end
+
+    subgraph CICD["CI/CD-Umgebung"]
+      direction TB
+      Jenkins["jenkins (my-jenkins)<br/>Jenkins LTS + Node 20 + docker-cli + compose · Port 8080"]
+      subgraph Mounts[" "]
+        direction LR
+        VolJ[("jenkins_home")]
+        VolS[("shopco-src")]
+        Sock[/"docker.sock"/]
+      end
+      Jenkins -->|"mountet · spawnt via host.docker.internal"| Mounts
+    end
+  end
+
+  subgraph Ext["Externe Services (gemockt)"]
+    direction LR
+    Payment["Payment Provider<br/>(mockFetch / cy.intercept)"]
+    Email["Email Service<br/>(mockFetch / cy.intercept)"]
+  end
+
+  subgraph Pipeline["Jenkins Pipeline · 3 impl. + 3 geplant"]
+    direction TB
+    P1["Checkout (implizit) · tar aus shopco-src"] --> P2["1. Build · npm ci + prisma generate"]
+    P2 --> P3["2. Unit & Integration Tests · npm run test:ci"]
+    P3 -.-> P4["3. E2E Tests · Cypress headless"]
+    P4 -.-> P5["4. Deploy Staging · scripts/deploy.sh"]
+    P5 -.-> P6["5. Manual Approval · input → Production"]
+  end
+
+  Browser -->|HTTP| App
+  App -->|REST| Payment
+  App -->|REST| Email
+  Jenkins ==>|führt aus| Pipeline
+
+  classDef impl fill:#cfe8cc,stroke:#2d6a4f,color:#000
+  classDef plan fill:#f4e4bc,stroke:#a07c00,color:#000,stroke-dasharray: 5 5
+  classDef ext fill:#e0e0e0,stroke:#666,color:#000
+  class P1,P2,P3 impl
+  class P4,P5,P6 plan
+  class Payment,Email ext
