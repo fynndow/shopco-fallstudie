@@ -20,6 +20,9 @@ pipeline {
       }
     }
     stage('Unit & Integration Tests') {
+      environment {
+        DATABASE_URL = 'postgresql://shopco:shopco@host.docker.internal:5433/shopco_test?schema=public'
+      }
       steps {
         sh 'docker compose -f docker-compose.test.yml up -d db-test'
         sh 'npx wait-on tcp:host.docker.internal:5433 || sleep 5'
