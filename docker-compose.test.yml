@@ -26,6 +26,7 @@ services:
       DATABASE_URL: "postgresql://shopco:shopco@db-test:5432/shopco_test?schema=public"
       JWT_SECRET: "shopco-test-secret"
       NODE_ENV: test
+      PAYMENT_MOCK: "true"
       PORT: 3000
     ports:
       - "3000:3000"
