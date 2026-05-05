@@ -7,6 +7,9 @@ async function charge({ amount, currency = 'EUR', paymentMethod, idempotencyKey 
     err.statusCode = 400;
     throw err;
   }
+  if (process.env.PAYMENT_MOCK === 'true') {
+    return { status: 'approved', txId: 'mock-tx-' + Date.now() };
+  }
   const res = await fetch(`${config.paymentProviderUrl}/charge`, {
     method: 'POST',
     headers: {
