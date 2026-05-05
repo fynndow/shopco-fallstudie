@@ -46,14 +46,13 @@ pipeline {
     }
     stage('E2E Tests') {
       steps {
-        sh 'docker compose -f docker-compose.test.yml up -d'
-        sh 'npx wait-on http://host.docker.internal:3000/api/health'
-        sh 'npx cypress run --headless'
+        sh 'docker compose -f docker-compose.test.yml --profile e2e up -d --wait'
+        sh 'docker compose -f docker-compose.test.yml --profile e2e run --rm cypress cypress run'
       }
       post {
         always {
           archiveArtifacts artifacts: 'cypress/screenshots/**,cypress/videos/**', allowEmptyArchive: true
-          sh 'docker compose -f docker-compose.test.yml down -v'
+          sh 'docker compose -f docker-compose.test.yml --profile e2e down -v'
         }
       }
     }
