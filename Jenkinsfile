@@ -45,6 +45,9 @@ pipeline {
       }
     }
     stage('E2E Tests') {
+      environment {
+        HOST_WORKSPACE = '/var/lib/docker/volumes/jenkins_home/_data/workspace/shopco-test'
+      }
       steps {
         sh '''
           set -e
