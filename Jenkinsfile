@@ -46,13 +46,24 @@ pipeline {
     }
     stage('E2E Tests') {
       steps {
-        sh 'docker compose -f docker-compose.test.yml --profile e2e up -d --wait'
-        sh 'docker compose -f docker-compose.test.yml --profile e2e run --rm cypress cypress run'
+        sh '''
+          set -e
+          docker compose -f docker-compose.test.yml --profile e2e up -d --wait || {
+            echo "=== DB LOGS ==="
+            docker compose -f docker-compose.test.yml logs db-test || true
+            echo "=== APP LOGS ==="
+            docker compose -f docker-compose.test.yml logs app-test || true
+            echo "=== CYPRESS LOGS ==="
+            docker compose -f docker-compose.test.yml logs cypress || true
+            exit 1
+          }
+          docker compose -f docker-compose.test.yml --profile e2e run --rm cypress cypress run
+        '''
       }
       post {
         always {
           archiveArtifacts artifacts: 'cypress/screenshots/**,cypress/videos/**', allowEmptyArchive: true
-          sh 'docker compose -f docker-compose.test.yml --profile e2e down -v'
+          sh 'docker compose -f docker-compose.test.yml --profile e2e down -v || true'
         }
       }
     }
