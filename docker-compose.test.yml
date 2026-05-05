@@ -48,8 +48,8 @@ services:
       CYPRESS_BASE_URL: "http://app-test:3000"
     working_dir: /e2e
     volumes:
-      - ./cypress:/e2e/cypress
-      - ./cypress.config.js:/e2e/cypress.config.js
-      - ./package.json:/e2e/package.json
+      - ${HOST_WORKSPACE:-.}/cypress:/e2e/cypress
+      - ${HOST_WORKSPACE:-.}/cypress.config.js:/e2e/cypress.config.js
+      - ${HOST_WORKSPACE:-.}/package.json:/e2e/package.json
     profiles:
       - e2e
