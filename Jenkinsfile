@@ -48,7 +48,7 @@ pipeline {
       steps {
         sh '''
           set -e
-          docker compose -f docker-compose.test.yml --profile e2e up -d --wait || {
+          docker compose -f docker-compose.test.yml --profile e2e up -d --wait --build || {
             echo "=== DB LOGS ==="
             docker compose -f docker-compose.test.yml logs db-test || true
             echo "=== APP LOGS ==="
