@@ -1,21 +1,17 @@
 pipeline {
   agent any
-
   triggers {
     pollSCM('H/5 * * * *')
   }
-
   options {
     timestamps()
     ansiColor('xterm')
     buildDiscarder(logRotator(numToKeepStr: '20'))
   }
-
   environment {
     NODE_ENV = 'test'
     CI = 'true'
   }
-
   stages {
     stage('Build') {
       steps {
@@ -23,11 +19,10 @@ pipeline {
         sh 'npx prisma generate'
       }
     }
-
     stage('Unit & Integration Tests') {
       steps {
         sh 'docker compose -f docker-compose.test.yml up -d db-test'
-        sh 'npx wait-on tcp:localhost:5433 || sleep 5'
+        sh 'npx wait-on tcp:host.docker.internal:5433 || sleep 5'
         sh 'npx prisma migrate deploy'
         sh 'npm run test:ci'
       }
@@ -46,11 +41,10 @@ pipeline {
         }
       }
     }
-
     stage('E2E Tests') {
       steps {
         sh 'docker compose -f docker-compose.test.yml up -d'
-        sh 'npx wait-on http://localhost:3000/api/health'
+        sh 'npx wait-on http://host.docker.internal:3000/api/health'
         sh 'npx cypress run --headless'
       }
       post {
@@ -60,7 +54,6 @@ pipeline {
         }
       }
     }
-
     stage('Deploy Staging') {
       when { branch 'main' }
       steps {
@@ -68,7 +61,6 @@ pipeline {
         sh 'curl -f http://staging.shopco.de/api/health'
       }
     }
-
     stage('Manual Approval') {
       when { branch 'main' }
       steps {
@@ -77,15 +69,9 @@ pipeline {
       }
     }
   }
-
   post {
     always {
       sh 'docker compose -f docker-compose.test.yml down -v || true'
-    }
-    failure {
-      mail to: 'team@shopco.de',
-           subject: "Build #${env.BUILD_NUMBER} failed",
-           body: "See ${env.BUILD_URL}"
     }
   }
 }
