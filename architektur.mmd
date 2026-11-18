@@ -31,13 +31,13 @@ graph TB
     Email["Email Service<br/>(mockFetch / cy.intercept)"]
   end
 
-  subgraph Pipeline["Jenkins Pipeline · 3 impl. + 3 geplant"]
+  subgraph Pipeline["Jenkins Pipeline · 5 Stufen"]
     direction TB
     P1["Checkout (implizit) · tar aus shopco-src"] --> P2["1. Build · npm ci + prisma generate"]
     P2 --> P3["2. Unit & Integration Tests · npm run test:ci"]
-    P3 -.-> P4["3. E2E Tests · Cypress headless"]
-    P4 -.-> P5["4. Deploy Staging · scripts/deploy.sh"]
-    P5 -.-> P6["5. Manual Approval · input → Production"]
+    P3 --> P4["3. E2E Tests · Cypress headless"]
+    P4 --> P5["4. Deploy Staging · scripts/deploy.sh (simuliert)"]
+    P5 --> P6["5. Manual Approval · input → Production (simuliert)"]
   end
 
   Browser -->|HTTP| App
@@ -46,8 +46,8 @@ graph TB
   Jenkins ==>|führt aus| Pipeline
 
   classDef impl fill:#cfe8cc,stroke:#2d6a4f,color:#000
-  classDef plan fill:#f4e4bc,stroke:#a07c00,color:#000,stroke-dasharray: 5 5
+  classDef mock fill:#f4e4bc,stroke:#a07c00,color:#000,stroke-dasharray: 5 5
   classDef ext fill:#e0e0e0,stroke:#666,color:#000
-  class P1,P2,P3 impl
-  class P4,P5,P6 plan
+  class P1,P2,P3,P4 impl
+  class P5,P6 mock
   class Payment,Email ext
